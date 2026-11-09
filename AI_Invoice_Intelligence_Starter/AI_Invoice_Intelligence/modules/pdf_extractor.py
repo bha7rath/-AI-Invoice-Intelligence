@@ -1,17 +1,7 @@
-
 import fitz  # PyMuPDF
-from pathlib import Path
-from paddleocr import PaddleOCR
 from PIL import Image
 import numpy as np
 import io
-
-
-# Load PaddleOCR model only once
-ocr = PaddleOCR(
-    use_textline_orientation=True,
-    lang="en"
-)
 
 
 def extract_pdf_text(file_bytes: bytes) -> dict:
@@ -22,7 +12,7 @@ def extract_pdf_text(file_bytes: bytes) -> dict:
         Uses PyMuPDF.
 
     Scanned PDF:
-        Uses PaddleOCR.
+        Uses PaddleOCR only when OCR is actually required.
     """
 
     if not file_bytes:
@@ -37,6 +27,10 @@ def extract_pdf_text(file_bytes: bytes) -> dict:
         pages = []
         extraction_methods = []
 
+        # PaddleOCR is NOT loaded when the app starts.
+        # It is created only if a scanned page needs OCR.
+        ocr = None
+
         for page_number, page in enumerate(document, start=1):
 
             # First try extracting selectable text
@@ -44,12 +38,21 @@ def extract_pdf_text(file_bytes: bytes) -> dict:
 
             if len(page_text) >= 30:
                 extraction_methods.append("PyMuPDF")
+
                 pages.append(
                     f"--- Page {page_number} ---\n{page_text}"
                 )
 
             else:
-                # If selectable text is missing, use PaddleOCR
+                # Scanned/image-based page → use PaddleOCR
+                if ocr is None:
+                    from paddleocr import PaddleOCR
+
+                    ocr = PaddleOCR(
+                        use_textline_orientation=True,
+                        lang="en"
+                    )
+
                 pixmap = page.get_pixmap(dpi=200)
                 image_bytes = pixmap.tobytes("png")
 

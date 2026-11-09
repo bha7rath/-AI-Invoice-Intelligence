@@ -1,0 +1,26 @@
+
+{
+  "purchase_orders": [
+    {
+      "po_number": "PO-5001",
+      "vendor_name": "TAMIL TECH SUPPLIES",
+      "po_amount": 50000,
+      "upward_tolerance_percent": 0,
+      "downward_tolerance_percent": 2
+    },
+    {
+      "po_number": "PO-5002",
+      "vendor_name": "ABC TECHNOLOGIES",
+      "po_amount": 75000,
+      "upward_tolerance_percent": 3,
+      "downward_tolerance_percent": 2
+    },
+    {
+      "po_number": "PO-5003",
+      "vendor_name": "ABC TECHNOLOGIES",
+      "po_amount": 60000,
+      "upward_tolerance_percent": 3,
+      "downward_tolerance_percent": 2
+    }
+  ]
+}

@@ -1,19 +1,39 @@
-
 import os
 import json
 
 from dotenv import load_dotenv
 from groq import Groq
 
-# Load environment variables from .env
+# Load environment variables from local .env
 load_dotenv()
 
+# Get API key from local .env first
 API_KEY = os.getenv("GROQ_API_KEY")
+
+# If running on Streamlit Cloud, get it from Streamlit Secrets
+if not API_KEY:
+    try:
+        import streamlit as st
+        API_KEY = st.secrets.get("GROQ_API_KEY")
+    except Exception:
+        API_KEY = None
+
+# Get model from environment or Streamlit Secrets
 MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+
+if not os.getenv("GROQ_MODEL"):
+    try:
+        import streamlit as st
+        MODEL = st.secrets.get(
+            "GROQ_MODEL",
+            "openai/gpt-oss-120b"
+        )
+    except Exception:
+        pass
 
 if not API_KEY:
     raise ValueError(
-        "GROQ_API_KEY not found. Check your .env file."
+        "GROQ_API_KEY not found. Add it to Streamlit Secrets."
     )
 
 client = Groq(

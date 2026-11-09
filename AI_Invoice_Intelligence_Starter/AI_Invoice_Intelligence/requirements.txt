@@ -6,5 +6,5 @@ groq
 openpyxl
 numpy
 Pillow
-paddlepaddle>=3,<4
-paddleocr>=3,<4
+paddlepaddle==3.2.0
+paddleocr==3.2.0
